@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.IBinder;
-
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button connect;
     ImageView uavView;
     StaticViewPager viewPager;
+
     boolean prepareSend = false;
     List<ControlFragment> fragmentList = new ArrayList<>();
 
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         uavView = findViewById(R.id.uavView);
         uavName = findViewById(R.id.uavName);
         viewPager = findViewById(R.id.contentView);
-
         uavView.setOnClickListener(this);
         uavName.setOnClickListener(this);
 
@@ -76,9 +75,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 binder.addMessageReceivedListener(new QuadrotorService.OnMessageReceivedListener() {
-                    protected  String wifiName;
-                    protected int wifiAddress;
-                    protected String wifiMac;
+                    String wifiName;
+                    int wifiAddress;
+                    String wifiMac;
 
                     @Override
                     public void onReceived(final GecMessage message) {
@@ -86,7 +85,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                messageView.setText(message.toHexString());
+//                                if (message.isType(GecMessage.TIMING_RETURN)) {
+//                                    String a =String.format("加速度 x:%d,y:%d,z:%d",message.getAccelerationX(),message.getAccelerationY(),message.getAccelerationZ());
+                                    messageView.setText(message.toHexString());
+//                                }
                             }
                         });
                     }
@@ -123,15 +125,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onServerConnected(String name, int address, String mac) {
                         Log.d(TAG, "onServerConnected");
                         prepareSend = true;
-                        wifiName= name;
-                        wifiMac=mac;
-                        wifiAddress=address;
+                        wifiName = name;
+                        wifiMac = mac;
+                        wifiAddress = address;
 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 connect.setBackgroundResource(R.drawable.power_on);
-                                uavName.setText(wifiName + " - " + wifiMac);
+                                uavName.setText(wifiName);
                             }
                         });
                         binder.waitingMessage();
@@ -184,12 +186,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.uavView:
             case R.id.uavName:
                 if (prepareSend) {
-                    Log.d(TAG,"reconnecting server");
+                    Log.d(TAG, "reconnecting server");
                     binder.connect();
                 }
                 break;
             case R.id.connect:
-                Log.d(TAG,"connecting server");
+                Log.d(TAG, "connecting server");
                 startService(new Intent(this, QuadrotorService.class));
                 bindService(new Intent(this, QuadrotorService.class), connection, BIND_AUTO_CREATE);
                 break;

@@ -5,43 +5,39 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
 import cn.dxkite.quadrotor.R;
 
 public class NumberEdit extends LinearLayout {
-    int number=50,max=100,min=0;
-    String namespace ="http://schemas.android.com/apk/res/android";
+    int number = 50, max = 100, min = 0,size =1;
+    String namespace = "http://schemas.android.com/apk/res/android";
     Button down;
     Button up;
     EditText editText;
     View layout;
-    final static String TAG ="NumberEdit";
+    final static String TAG = "NumberEdit";
     OnNumberChangeListener numberChangeListener;
 
     public NumberEdit(Context context) {
         super(context);
-        layout =  LayoutInflater.from(context).inflate(R.layout.number_edit,null);
+        layout = LayoutInflater.from(context).inflate(R.layout.number_edit, null);
         init();
     }
 
     public NumberEdit(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        layout =  LayoutInflater.from(context).inflate(R.layout.number_edit,null);
-//        min = attrs.getAttributeIntValue(namespace,"min",min);
-//        max = attrs.getAttributeIntValue(namespace,"max",max);
+        layout = LayoutInflater.from(context).inflate(R.layout.number_edit, null);
         init();
     }
 
     public NumberEdit(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        layout =  LayoutInflater.from(context).inflate(R.layout.number_edit,null);
-//        min = attrs.getAttributeIntValue(namespace,"min",min);
-//        max = attrs.getAttributeIntValue(namespace,"max",max);
+        layout = LayoutInflater.from(context).inflate(R.layout.number_edit, null);
         init();
     }
 
@@ -59,7 +55,7 @@ public class NumberEdit extends LinearLayout {
             @Override
             public void onClick(View v) {
                 if (number < max) {
-                    number += 1;
+                    number += size;
                     editText.setText(String.valueOf(number));
                 }
             }
@@ -69,7 +65,7 @@ public class NumberEdit extends LinearLayout {
             @Override
             public void onClick(View v) {
                 if (number > min) {
-                    number -= 1;
+                    number -= size;
                     editText.setText(String.valueOf(number));
                 }
             }
@@ -83,22 +79,36 @@ public class NumberEdit extends LinearLayout {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    int select = editText.getSelectionStart();
+                    number = Integer.valueOf(s.toString());
+                    if (number > max) {
+                        number = max;
+                    }
+                    if (number < min) {
+                        number = min;
+                    }
+                    if (numberChangeListener != null) {
+                        numberChangeListener.onNumberChange(NumberEdit.this, number);
+                    }
 
+                    editText.removeTextChangedListener(this);
+                    editText.setText(String.valueOf(number));
+                    editText.addTextChangedListener(this);
+                    if (s.length() > select) {
+                        editText.setSelection(select);
+                    } else {
+                        editText.setSelection(s.length()-1);
+                    }
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                 if (s.length() > 0) {
-                     number =Integer.valueOf(s.toString());
-                     if (number > max) number = max;
-                     if (number < min) number = min;
-                     if (numberChangeListener != null) {
-                         numberChangeListener.onNumberChange(NumberEdit.this,number);
-                     }
-                 }
+
             }
         });
-        layout.setLayoutParams( new LinearLayout.LayoutParams(
+        layout.setLayoutParams(new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT)
         );
@@ -130,7 +140,15 @@ public class NumberEdit extends LinearLayout {
         this.min = min;
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     public interface OnNumberChangeListener {
-        void onNumberChange(NumberEdit numberEdit,int number);
+        void onNumberChange(NumberEdit numberEdit, int number);
     }
 }

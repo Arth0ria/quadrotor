@@ -101,17 +101,20 @@ public class GecClient {
 
     private void readIfAvailable() {
         try {
-            byte[] data = new byte[34];
-            int length = input.read(data);
-            byte head = data[0];
-            byte allow = (byte) 0xAA;
-            if (head == allow) {
-                connector.onMessage(new GecMessage(data));
-//                System.out.println("received " + length + " -> " + read);
-            } else if (length > 1) {
-                String read = GecMessage.byte2hex(data, true, length);
-                System.err.println("received " + length + " -> " + read);
+
+            if (input.available() > 0) {
+                byte[] data = new byte[34];
+                int length = input.read(data);
+                byte head = data[0];
+                byte allow = (byte) 0xAA;
+                if (head == allow) {
+                    connector.onMessage(new GecMessage(data));
+                } else if (length > 1) {
+                    String read = GecMessage.byte2hex(data, true, length);
+                    System.err.println("received " + length + " -> " + read);
+                }
             }
+
         } catch (SocketTimeoutException e) {
             System.out.println("read message timeout");
         } catch (IOException e) {
@@ -151,7 +154,6 @@ public class GecClient {
             send(message);
             byte[] data = new byte[34];
             int length = input.read(data);
-
             if (length > 0) {
                 return data;
             } else {

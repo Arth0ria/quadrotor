@@ -21,6 +21,8 @@ public class ButtonSeekBar extends LinearLayout {
 
     int progress = 0;
     int max = 100;
+    int size =10;
+
     String namespace ="http://schemas.android.com/apk/res/android";
     Button down;
     Button up;
@@ -71,7 +73,7 @@ public class ButtonSeekBar extends LinearLayout {
             @Override
             public void onClick(View v) {
                 if (progress < max) {
-                    progress += 1;
+                    progress += size;
                     seekBar.setProgress(progress);
                     if (changeListener != null)
                         changeListener.onProgressChanged(seekBar, progress, true);
@@ -83,7 +85,7 @@ public class ButtonSeekBar extends LinearLayout {
             @Override
             public void onClick(View v) {
                 if (progress >= 0) {
-                    progress -= 1;
+                    progress -= size;
                     seekBar.setProgress(progress);
                     if (changeListener != null)
                         changeListener.onProgressChanged(seekBar, progress, true);

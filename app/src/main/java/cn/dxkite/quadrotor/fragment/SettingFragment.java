@@ -16,13 +16,14 @@ import cn.dxkite.quadrotor.QuadrotorService;
 import cn.dxkite.quadrotor.R;
 import cn.dxkite.quadrotor.adapter.ControlFragmentAdapter;
 import cn.dxkite.view.NumberEdit;
+import cn.dxkite.view.StaticViewPager;
 
 public class SettingFragment extends ControlFragment {
 
     ControlFragmentAdapter adapter;
     List<ControlFragment> fragmentList = new ArrayList<>();
     TabLayout tabLayout;
-    ViewPager viewPager;
+    StaticViewPager viewPager;
 
     @Override
     public View onInitView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

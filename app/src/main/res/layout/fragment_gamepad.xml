@@ -15,8 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -39,22 +38,30 @@
                 android:orientation="horizontal">
 
                 <Switch
+                    android:id="@+id/move"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="锁定摇杆" />
+
+                <Switch
                     android:id="@+id/lock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="锁定滑动" />
+
             </LinearLayout>
 
             <cn.dxkite.view.RockerView
-                android:id="@+id/power"
+                android:id="@+id/direction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 app:areaBackground="@mipmap/rocker_base"
                 app:rockerBackground="@mipmap/rocker"
-                app:rockerCallBackMode="CALL_BACK_MODE_STATE_CHANGE"
+                app:rockerCallBackMode="CALL_BACK_MODE_MOVE"
                 app:rockerScale="0.5"
                 app:rockerSpeedLevel="10" />
 
@@ -66,12 +73,12 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <SurfaceView
-                android:id="@+id/surfaceView"
+            <TextView
+                android:id="@+id/debug"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/colorPrimaryDark" />
+                android:textAlignment="center" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,14 +121,14 @@
             </LinearLayout>
 
             <cn.dxkite.view.RockerView
-                android:id="@+id/direction"
+                android:id="@+id/power"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 app:areaBackground="@mipmap/rocker_base"
                 app:rockerBackground="@mipmap/rocker"
-                app:rockerCallBackMode="CALL_BACK_MODE_STATE_CHANGE"
+                app:rockerCallBackMode="CALL_BACK_MODE_MOVE"
                 app:rockerScale="0.5"
                 app:rockerSpeedLevel="10" />
         </LinearLayout>

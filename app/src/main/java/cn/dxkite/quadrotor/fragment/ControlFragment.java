@@ -2,11 +2,8 @@ package cn.dxkite.quadrotor.fragment;
 
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,20 +11,20 @@ import android.view.ViewGroup;
 
 import cn.dxkite.gec.connector.GecMessage;
 import cn.dxkite.quadrotor.QuadrotorService;
-import cn.dxkite.quadrotor.R;
+import cn.dxkite.view.StaticViewPager;
 
 public abstract class ControlFragment extends Fragment implements QuadrotorService.OnMessageReceivedListener {
-    ViewPager viewPager;
+    StaticViewPager viewPager;
     View view;
     final static String TAG = "ControlFragment";
 
     QuadrotorService.QuadrotorBinder binder;
 
-    public ViewPager getViewPager() {
+    public StaticViewPager getViewPager() {
         return viewPager;
     }
 
-    public void setViewPager(ViewPager viewPager) {
+    public void setViewPager(StaticViewPager viewPager) {
         this.viewPager = viewPager;
     }
 
@@ -37,12 +34,16 @@ public abstract class ControlFragment extends Fragment implements QuadrotorServi
 
     public void setBinder(QuadrotorService.QuadrotorBinder binder) {
         this.binder = binder;
-        //TODO Fix Attempt to invoke virtual method 'void cn.dxkite.quadrotor.QuadrotorService$QuadrotorBinder.addMessageReceivedListener(cn.dxkite.quadrotor.QuadrotorService$OnMessageReceivedListener)' on a null object reference,
-        this.binder.addMessageReceivedListener(this);
-        Log.d(TAG,"binder addMessageReceivedListener");
+        if (binder != null) {
+            //TODO Fix Attempt to invoke virtual method 'void cn.dxkite.quadrotor.QuadrotorService$QuadrotorBinder.addMessageReceivedListener(cn.dxkite.quadrotor.QuadrotorService$OnMessageReceivedListener)' on a null object reference,
+            this.binder.addMessageReceivedListener(this);
+            Log.d(TAG, "binder addMessageReceivedListener");
+        } else {
+            Log.e(TAG, "binder addMessageReceivedListener to " + this.getClass().getName() + " error");
+        }
     }
 
-    public static ControlFragment createFragment(Class<? extends ControlFragment> fragmentClass, ViewPager viewPager) {
+    public static ControlFragment createFragment(Class<? extends ControlFragment> fragmentClass, StaticViewPager viewPager) {
         ControlFragment fragment = null;
         try {
             fragment = fragmentClass.newInstance();
@@ -55,18 +56,18 @@ public abstract class ControlFragment extends Fragment implements QuadrotorServi
         return fragment;
     }
 
-    abstract public View onInitView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) ;
+    abstract public View onInitView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState);
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         if (view == null) {
-            view = onInitView(inflater,container,savedInstanceState);
+            view = onInitView(inflater, container, savedInstanceState);
         }
         return view;
     }
 
-    public static ControlFragment createFragment(Class<? extends ControlFragment> fragmentClass, ViewPager viewPager, QuadrotorService.QuadrotorBinder binder) {
+    public static ControlFragment createFragment(Class<? extends ControlFragment> fragmentClass, StaticViewPager viewPager, QuadrotorService.QuadrotorBinder binder) {
         ControlFragment fragment = null;
         try {
             fragment = fragmentClass.newInstance();
@@ -83,23 +84,24 @@ public abstract class ControlFragment extends Fragment implements QuadrotorServi
     public void send(GecMessage message) {
         if (binder != null) {
             binder.send(message);
-        }else{
-            Log.e(TAG,"send message error , binder is null");
+        } else {
+            Log.e(TAG, "send message error , binder is null");
         }
     }
 
     public void send(final GecMessage message, final MessageReceiver receiver) {
         new Thread(new Runnable() {
             GecMessage msg = null;
+
             @Override
             public void run() {
                 msg = binder.sendAndReturn(message);
-               view.post(new Runnable() {
-                   @Override
-                   public void run() {
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
                         receiver.onReceived(msg);
-                   }
-               });
+                    }
+                });
             }
         }).start();
     }
@@ -147,6 +149,12 @@ public abstract class ControlFragment extends Fragment implements QuadrotorServi
         simpleMessage.setRoll(1500);
         simpleMessage.setCourse(1500);
         return simpleMessage;
+    }
+
+    void setSimpleMessage(GecMessage message) {
+        if (binder != null) {
+            binder.setSimple(message);
+        }
     }
 
     interface MessageReceiver {

@@ -197,51 +197,51 @@ public class GecMessage implements Serializable {
     }
 
     public int getAccelerationX() {
-        return accelerationX + 500;
+        return accelerationX+ 500;
     }
 
     public void setAccelerationX(int accelerationX) {
-        this.accelerationX = accelerationX /* -500 */;
+        this.accelerationX = accelerationX/* -500 */;
     }
 
     public int getAccelerationY() {
-        return accelerationY + 500;
+        return accelerationY;
     }
 
     public void setAccelerationY(int accelerationY) {
-        this.accelerationY = accelerationY /* -500 */;
+        this.accelerationY = accelerationY/* -500 */;
     }
 
     public int getAccelerationZ() {
-        return accelerationZ + 500;
+        return accelerationZ;
     }
 
     public void setAccelerationZ(int accelerationZ) {
-        this.accelerationZ = accelerationZ /* -500 */;
+        this.accelerationZ = accelerationZ/* -500 */;
     }
 
     public int getGyroscopeX() {
-        return gyroscopeX + 500;
+        return gyroscopeX;
     }
 
     public void setGyroscopeX(int gyroscopeX) {
-        this.gyroscopeX = gyroscopeX/* -500 */;
+        this.gyroscopeX = gyroscopeX;
     }
 
     public int getGyroscopeY() {
-        return gyroscopeY + 500;
+        return gyroscopeY;
     }
 
     public void setGyroscopeY(int gyroscopeY) {
-        this.gyroscopeY = gyroscopeY/* -500 */;
+        this.gyroscopeY = gyroscopeY;
     }
 
     public int getGyroscopeZ() {
-        return gyroscopeZ + 500;
+        return gyroscopeZ;
     }
 
     public void setGyroscopeZ(int gyroscopeZ) {
-        this.gyroscopeZ = gyroscopeZ/* -500 */;
+        this.gyroscopeZ = gyroscopeZ;
     }
 
     public int getVoltage() {
